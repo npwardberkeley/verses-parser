@@ -1,0 +1,7 @@
+copy HTML of div#divVerses
+
+remove all lines not containing <span style="color:#00AA00">:
+regex find/replace ^((?!<span style="color:#00AA00">).)*$\n with blank
+delete final line
+
+replace \s+<span style="color:#00AA00">•</span> (.*)&nbsp; with $1

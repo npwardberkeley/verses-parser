@@ -1,9 +1,10 @@
-use std::cmp::{min, max};
+use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result};
+use std::str::FromStr;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-enum Book {
+#[derive(Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub enum Book {
     Genesis,
     Exodus,
     Leviticus,
@@ -75,8 +76,8 @@ enum Book {
 impl Display for Book {
     fn fmt(&self, f: &mut Formatter) -> Result {
         match self {
-            Book::Exodus => write!(f, "Exodus"),
             Book::Genesis => write!(f, "Genesis"),
+            Book::Exodus => write!(f, "Exodus"),
             Book::Leviticus => write!(f, "Leviticus"),
             Book::Numbers => write!(f, "Numbers"),
             Book::Deuteronomy => write!(f, "Deuteronomy"),
@@ -96,7 +97,7 @@ impl Display for Book {
             Book::Psalms => write!(f, "Psalms"),
             Book::Proverbs => write!(f, "Proverbs"),
             Book::Ecclesiastes => write!(f, "Ecclesiastes"),
-            Book::SongOfSolomon => write!(f, "SongOfSolomon"),
+            Book::SongOfSolomon => write!(f, "Song of Solomon"),
             Book::Isaiah => write!(f, "Isaiah"),
             Book::Jeremiah => write!(f, "Jeremiah"),
             Book::Lamentations => write!(f, "Lamentations"),
@@ -145,12 +146,89 @@ impl Display for Book {
     }
 }
 
-#[derive(Clone, Copy)]
-struct Passage {
-    book: Book,
-    chapter: u8,
-    start_verse: u8,
-    end_verse: u8,
+impl FromStr for Book {
+    type Err = ();
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "Genesis" => Ok(Book::Genesis),
+            "Exodus" => Ok(Book::Exodus),
+            "Leviticus" => Ok(Book::Leviticus),
+            "Numbers" => Ok(Book::Numbers),
+            "Deuteronomy" => Ok(Book::Deuteronomy),
+            "Joshua" => Ok(Book::Joshua),
+            "Judges" => Ok(Book::Judges),
+            "Ruth" => Ok(Book::Ruth),
+            "1 Samuel" => Ok(Book::Samuel1),
+            "2 Samuel" => Ok(Book::Samuel2),
+            "1 Kings" => Ok(Book::Kings1),
+            "2 Kings" => Ok(Book::Kings2),
+            "1 Chronicles" => Ok(Book::Chronicles1),
+            "2 Chronicles" => Ok(Book::Chronicles2),
+            "Ezra" => Ok(Book::Ezra),
+            "Nehemiah" => Ok(Book::Nehemiah),
+            "Esther" => Ok(Book::Esther),
+            "Job" => Ok(Book::Job),
+            "Psalm" => Ok(Book::Psalms),
+            "Psalms" => Ok(Book::Psalms),
+            "Proverbs" => Ok(Book::Proverbs),
+            "Ecclesiastes" => Ok(Book::Ecclesiastes),
+            "Song of Solomon" => Ok(Book::SongOfSolomon),
+            "Isaiah" => Ok(Book::Isaiah),
+            "Jeremiah" => Ok(Book::Jeremiah),
+            "Lamentations" => Ok(Book::Lamentations),
+            "Ezekiel" => Ok(Book::Ezekiel),
+            "Daniel" => Ok(Book::Daniel),
+            "Hosea" => Ok(Book::Hosea),
+            "Joel" => Ok(Book::Joel),
+            "Amos" => Ok(Book::Amos),
+            "Obadiah" => Ok(Book::Obadiah),
+            "Jonah" => Ok(Book::Jonah),
+            "Micah" => Ok(Book::Micah),
+            "Nahum" => Ok(Book::Nahum),
+            "Habakkuk" => Ok(Book::Habakkuk),
+            "Zephaniah" => Ok(Book::Zephaniah),
+            "Haggai" => Ok(Book::Haggai),
+            "Zechariah" => Ok(Book::Zechariah),
+            "Malachi" => Ok(Book::Malachi),
+            "Matthew" => Ok(Book::Matthew),
+            "Mark" => Ok(Book::Mark),
+            "Luke" => Ok(Book::Luke),
+            "John" => Ok(Book::John),
+            "Acts" => Ok(Book::Acts),
+            "Romans" => Ok(Book::Romans),
+            "1 Corinthians" => Ok(Book::Corinthians1),
+            "2 Corinthians" => Ok(Book::Corinthians2),
+            "Galatians" => Ok(Book::Galatians),
+            "Ephesians" => Ok(Book::Ephesians),
+            "Philippians" => Ok(Book::Philippians),
+            "Colossians" => Ok(Book::Colossians),
+            "1 Thessalonians" => Ok(Book::Thessalonians1),
+            "2 Thessalonians" => Ok(Book::Thessalonians2),
+            "1 Timothy" => Ok(Book::Timothy1),
+            "2 Timothy" => Ok(Book::Timothy2),
+            "Titus" => Ok(Book::Titus),
+            "Philemon" => Ok(Book::Philemon),
+            "Hebrews" => Ok(Book::Hebrews),
+            "James" => Ok(Book::James),
+            "1 Peter" => Ok(Book::Peter1),
+            "2 Peter" => Ok(Book::Peter2),
+            "1 John" => Ok(Book::John1),
+            "2 John" => Ok(Book::John2),
+            "3 John" => Ok(Book::John3),
+            "Jude" => Ok(Book::Jude),
+            "Revelation" => Ok(Book::Revelation),
+            _ => Err(()),
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord)]
+pub struct Passage {
+    pub book: Book,
+    pub chapter: u8,
+    pub start_verse: u8,
+    pub end_verse: u8,
 }
 
 impl Passage {
@@ -163,14 +241,27 @@ impl Passage {
         }
     }
 
-    fn to_string(&self) -> String {
-        format!(
-            "{} {}:{}-{}",
-            self.book.to_string(),
-            self.chapter,
-            self.start_verse,
-            self.end_verse
-        )
+    pub fn to_string(&self) -> String {
+        if self.start_verse == self.end_verse {
+            format!(
+                "{} {}:{}",
+                self.book.to_string(),
+                self.chapter,
+                self.start_verse
+            )
+        } else {
+            format!(
+                "{} {}:{}-{}",
+                self.book.to_string(),
+                self.chapter,
+                self.start_verse,
+                self.end_verse
+            )
+        }
+    }
+
+    pub fn num_verses(&self) -> u32 {
+        (self.end_verse - self.start_verse + 1) as u32
     }
 
     fn merge(&self, other: &Passage) -> Passage {
@@ -178,7 +269,7 @@ impl Passage {
         assert!(self.chapter == other.chapter);
         let start_verse = min(self.start_verse, other.start_verse);
         let end_verse = max(self.end_verse, other.end_verse);
-        
+
         Passage {
             book: self.book,
             chapter: self.chapter,
@@ -187,9 +278,9 @@ impl Passage {
         }
     }
 
-    fn merge_all(passages: &Vec<Passage>) -> Vec<Passage> {
+    pub fn merge_all(passages: &Vec<Passage>) -> Vec<Passage> {
         let mut result: HashMap<(Book, u8), Passage> = HashMap::new();
-        
+
         for passage in passages {
             let key = (passage.book, passage.chapter);
             if result.contains_key(&key) {

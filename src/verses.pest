@@ -1,0 +1,8 @@
+book = { ('1'..'3' ~ " ")? ~ ASCII_ALPHA+ }
+chapter = { ASCII_DIGIT+ }
+verse = { ASCII_DIGIT+ }
+verses = { verse ~ ("-" ~ verse)? }
+
+reference = { book ~ " " ~ chapter ~ ":" ~ verses }
+
+references = { reference ~ (NEWLINE ~ reference)* }
